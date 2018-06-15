@@ -2,6 +2,7 @@ package com.example.lenovo.tq;
 
 import android.app.Fragment;
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -83,6 +84,24 @@ public class ChooseAreaFragment extends Fragment {
                     selectedCity = cityList.get(position);
                     queryCounties();
                 }
+                /*从省市县到列表界面跳转到天气界面*/
+                else if (currentLevel == LEVEL_COUNTY) {
+                    String weatherId = countyList.get(position).getWeatherId();
+                    if (getActivity() instanceof MainActivity) {
+                        Intent intent = new Intent(getActivity(), WeatherActivity.class);
+                        intent.putExtra("weather_id", weatherId);
+                        startActivity(intent);
+                        getActivity().finish();
+                    }
+                    /**/
+                    else if (getActivity() instanceof WeatherActivity) {
+                       WeatherActivity activity = (WeatherActivity) getActivity();
+                       activity.drawerLayout.closeDrawers();
+                       activity.swipeRefresh.setRefreshing(true);
+                       activity.requestWeather(weatherId);
+                    }
+                }
+
             }
         });
         backButton.setOnClickListener(new View.OnClickListener() {
